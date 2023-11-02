@@ -23,9 +23,6 @@ CREATE TABLE Treatments (
     name VARCHAR(80)
 );
 
--- Create an index on the id column of Treatments
-CREATE INDEX idx_treatments_id ON Treatments (id);
-
 CREATE TABLE Invoices (
     id SERIAL PRIMARY KEY,
     total_amount DECIMAL,
@@ -55,12 +52,15 @@ CREATE INDEX idx_invoice_id ON Invoice_Items (invoice_id);
 -- Create an index on the treatment_id column
 CREATE INDEX idx_treatment_id ON Invoice_Items (treatment_id);
 
--- add Medical_Histories and Treatments relationship
-ALTER TABLE Medical_Histories
-ADD COLUMN treatment_id INT,
-ADD CONSTRAINT fk_treatment_id
-    FOREIGN KEY (treatment_id)
-    REFERENCES Treatments(id);
+-- Create a join table for the many-to-many relationship
+CREATE TABLE Medical_History_Treatments (
+    id SERIAL PRIMARY KEY,
+    medical_history_id INT,
+    treatment_id INT,
+    FOREIGN KEY (medical_history_id) REFERENCES Medical_Histories(id),
+    FOREIGN KEY (treatment_id) REFERENCES Treatments(id)
+);
 
-ALTER TABLE Treatments
-ADD COLUMN history_id INT;
+-- Create indexes for the foreign keys in the join table
+CREATE INDEX idx_medical_history_id ON Medical_History_Treatments (medical_history_id);
+CREATE INDEX idx_treatment_id ON Medical_History_Treatments (treatment_id);
