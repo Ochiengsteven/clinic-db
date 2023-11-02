@@ -10,15 +10,21 @@ CREATE TABLE Medical_Histories (
     id SERIAL PRIMARY KEY,
     admitted_at TIMESTAMP,
     patient_id INT,
-    status varchar(80),
+    status VARCHAR(80),
     FOREIGN KEY (patient_id) REFERENCES Patients(id)
 );
 
+-- Create an index on the patient_id column
+CREATE INDEX idx_patient_id ON Medical_Histories (patient_id);
+
 CREATE TABLE Treatments (
     id SERIAL PRIMARY KEY,
-    type varchar(80),
-    name varchar(80)
+    type VARCHAR(80),
+    name VARCHAR(80)
 );
+
+-- Create an index on the id column of Treatments
+CREATE INDEX idx_treatments_id ON Treatments (id);
 
 CREATE TABLE Invoices (
     id SERIAL PRIMARY KEY,
@@ -28,6 +34,9 @@ CREATE TABLE Invoices (
     medical_history_id INT,
     FOREIGN KEY (medical_history_id) REFERENCES Medical_Histories(id)
 );
+
+-- Create an index on the medical_history_id column
+CREATE INDEX idx_medical_history_id ON Invoices (medical_history_id);
 
 CREATE TABLE Invoice_Items (
     id SERIAL PRIMARY KEY,
@@ -39,6 +48,12 @@ CREATE TABLE Invoice_Items (
     FOREIGN KEY (invoice_id) REFERENCES Invoices(id),
     FOREIGN KEY (treatment_id) REFERENCES Treatments(id)
 );
+
+-- Create an index on the invoice_id column
+CREATE INDEX idx_invoice_id ON Invoice_Items (invoice_id);
+
+-- Create an index on the treatment_id column
+CREATE INDEX idx_treatment_id ON Invoice_Items (treatment_id);
 
 -- add Medical_Histories and Treatments relationship
 ALTER TABLE Medical_Histories
